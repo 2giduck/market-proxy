@@ -17,14 +17,17 @@
     <div id="priceValue"></div>
         <script type="text/javascript">
             var source = null;
+            var source2 = null;
+            var source3 = null;
             var selectList = document.getElementById("typeOption").options;
             function start() {
+                stop();
                 var name = document.getElementById("name").value;
                 var optionIndex = selectList.selectedIndex;
                 if(selectList[optionIndex].value == 'fruit'){   // 선택한 값이 과일이라면
                     source = new EventSource("/product/fruit?name="+name);
                 }else{  // 선택한 값이 채소라면
-                    source = new EventSource("/product/item?name="+name);
+                    source = new EventSource("/product/vegetable?name="+name);
                 }
                 source.onmessage = function(ev) {
                     console.log("on message: ", ev.data);
@@ -39,10 +42,15 @@
             }
 
             window.onload=function(){
-                source = new EventSource("/product/fruit");
-                source.onmessage = function(ev) {
+                source2 = new EventSource("/product/fruit");
+                source2.onmessage = function(ev) {
                     console.log(ev.data)
                     $("#fruitList").text(ev.data)
+                };
+                source3 = new EventSource("/product/vegetable");
+                source3.onmessage = function(ev) {
+                    console.log(ev.data)
+                    $("#vegetableList").text(ev.data)
                 };
             }
 

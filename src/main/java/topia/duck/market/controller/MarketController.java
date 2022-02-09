@@ -6,11 +6,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
-import topia.duck.market.domain.Product;
 import topia.duck.market.server.FruitServer;
 import topia.duck.market.server.VegetableServer;
 
-import java.time.Duration;
 
 @RestController
 @RequestMapping("/product")
@@ -24,7 +22,6 @@ public class MarketController {
         this.vegetableServer = vegetableServer;
     }
 
-
     @GetMapping("/fruit")
     public Flux<?> getFruitItems(@RequestParam(value = "name", required = false)String name){
         fruitServer.getAccessToken();
@@ -32,6 +29,16 @@ public class MarketController {
             return fruitServer.getFruitList();
         }else{
             return fruitServer.getFruit(name);
+        }
+    }
+
+    @GetMapping("/vegetable")
+    public Flux<?> getVegetableItems(@RequestParam(value = "name", required = false)String name){
+        vegetableServer.getAccessToken();
+        if(name==null){ // 이름 없이 요청했으면, 과일 이름 목록 전달
+            return vegetableServer.getVegetableList();
+        }else{
+            return vegetableServer.getVegetable(name);
         }
     }
 
