@@ -1,11 +1,12 @@
 <!DOCTYPE html>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8"/>
 <head></head>
 <body>
 <div>
     <div id="productValue">
-        <div id="fruitList"></div>
-        <div id="vegetableList"></div>
+        과일 리스트: <div id="fruitList"></div>
+        채소 리스트: <div id="vegetableList"></div>
         <select class="select_type01 w170" id="typeOption">
             <option value="fruit">과일</option>
             <option value="vegetable">채소</option>
@@ -29,11 +30,6 @@
                     console.log("on message: ", ev.data);
                     $("#priceValue").text(ev.data)
                 };
-                source.onerror = function(err) {
-                    console.log("on err: ", err);
-                    $("#priceValue").text('해당하는 값이 없습니다')
-                    stop();
-                };
             }
             function stop() {
                 if (source != null) {
@@ -46,7 +42,7 @@
                 source = new EventSource("/product/fruit");
                 source.onmessage = function(ev) {
                     console.log(ev.data)
-                    $("#fruitList").value(ev.data)
+                    $("#fruitList").text(ev.data)
                 };
             }
 
