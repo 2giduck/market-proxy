@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import reactor.core.publisher.Flux;
 import topia.duck.market.domain.Product;
 
 import java.util.List;
@@ -34,13 +35,10 @@ class FruitServerImplTest {
         fruitServer.getAccessToken();
 
         //when
-//        String[] fruitList = fruitServer.getFruitList();
-//
-//        //then
-//        for (String fruit:fruitList) {
-//            System.out.println("fruit = " + fruit);
-//        }
-//        assertThat(fruitList.length).isNotEqualTo(0);
+        Flux<String> fruitList = fruitServer.getFruitList();
+
+        //then
+        assertThat(fruitList.blockFirst()).isNotEqualTo(null);
     }
 
     @Test
@@ -48,13 +46,13 @@ class FruitServerImplTest {
     public void 과일_가격_가져오기(){
         //given
         fruitServer.getAccessToken();
-//        String name = fruitServer.getFruitList()[0];
-//
-//        //when
-//        Product product = fruitServer.getFruit(name);
-//
-//        //then
-//        assertThat(product.getName()).isEqualTo(name);
+        String name = "사과";
+
+        //when
+        Flux<Product> product = fruitServer.getFruit(name);
+
+        //then
+        assertThat(product.blockFirst().getName()).isEqualTo(name);
     }
 
 }
