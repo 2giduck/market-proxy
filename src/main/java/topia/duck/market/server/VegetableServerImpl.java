@@ -3,7 +3,6 @@ package topia.duck.market.server;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
-@Slf4j
 @Component
-public class VegetableServerImpl {
+public class VegetableServerImpl implements VegetableServer {
 }
