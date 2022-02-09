@@ -7,6 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import reactor.core.publisher.Flux;
 import topia.duck.market.domain.Token;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,6 +28,19 @@ class FruitServerImplTest {
         //then
         assertThat(tokenFlux.blockFirst()).isNotEqualTo(null);
         System.out.println("token = " + tokenFlux.blockFirst().getAccessToken());
+    }
+
+    @Test
+    @DisplayName("과일 이름 리스트 가져오기 테스트")
+    public void 과일_이름_리스트_가져오기(){
+        //given
+        String token = fruitServer.getAccessToken().blockFirst().getAccessToken();
+
+        //when
+        Flux<String> fruitList = fruitServer.getFruitList(token);
+
+        //then
+        assertThat(fruitList).isNotEqualTo(null);
     }
 
 }

@@ -7,8 +7,6 @@ import reactor.core.publisher.Flux;
 import topia.duck.market.domain.Product;
 import topia.duck.market.domain.Token;
 
-import java.util.List;
-
 @Component
 public class FruitServerImpl implements FruitServer{
 
@@ -18,6 +16,7 @@ public class FruitServerImpl implements FruitServer{
     private final String HTTP_URL="http://";
     private final String GET_TOKEN_END_POINT="/token";
     private final String GET_FRUIT_END_POINT="/product";
+    private final String AUTHORIZATION_HEADER_KEY = "Authorization";
 
     @Override
     public Flux<Token> getAccessToken() {
@@ -29,12 +28,17 @@ public class FruitServerImpl implements FruitServer{
     }
 
     @Override
-    public List<String> getFruitList() {
-        return null;
+    public Flux<String> getFruitList(String token) {
+        return WebClient.create(HTTP_URL+FRUIT_HOST)
+                .get()
+                .uri(GET_FRUIT_END_POINT)
+                .header(AUTHORIZATION_HEADER_KEY, token)
+                .retrieve()
+                .bodyToFlux(String.class);
     }
 
     @Override
-    public Product getFruit(String name) {
+    public Flux<Product> getFruit(String token, String name) {
         return null;
     }
 }
