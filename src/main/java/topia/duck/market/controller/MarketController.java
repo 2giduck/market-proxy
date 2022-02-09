@@ -26,6 +26,7 @@ public class MarketController {
 
     @GetMapping("/fruit")
     public Flux<ServerSentEvent<?>> getFruitItems(@RequestParam(value = "name", required = false)String name){
+        fruitServer.getAccessToken();
         if(name==null){ // 이름 없이 요청했으면, 과일 이름 목록 전달
             return Flux.interval(Duration.ofSeconds(1))
                     .map(n->ServerSentEvent.builder(fruitServer.getFruitList()).build());
