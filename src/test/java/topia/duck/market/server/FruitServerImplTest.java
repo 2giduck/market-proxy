@@ -24,21 +24,19 @@ class FruitServerImplTest {
         //given
 
         //when
-        Flux<Token> tokenFlux = fruitServer.getAccessToken();
 
         //then
-        assertThat(tokenFlux.blockFirst()).isNotEqualTo(null);
-        System.out.println("token = " + tokenFlux.blockFirst().getAccessToken());
+        assertDoesNotThrow(()->fruitServer.getAccessToken());
     }
 
     @Test
     @DisplayName("과일 이름 리스트 가져오기 테스트")
     public void 과일_이름_리스트_가져오기(){
         //given
-        String token = fruitServer.getAccessToken().blockFirst().getAccessToken();
+        fruitServer.getAccessToken();
 
         //when
-        Flux<String> fruitList = fruitServer.getFruitList(token);
+        Flux<String> fruitList = fruitServer.getFruitList();
 
         //then
         assertThat(fruitList).isNotEqualTo(null);
@@ -48,11 +46,11 @@ class FruitServerImplTest {
     @DisplayName("과일 가격 가져오기 테스트")
     public void 과일_가격_가져오기(){
         //given
-        String token = fruitServer.getAccessToken().blockFirst().getAccessToken();
+        fruitServer.getAccessToken();
         String name = "사과";
 
         //when
-        Flux<Product> fruitFlux = fruitServer.getFruit(token, name);
+        Flux<Product> fruitFlux = fruitServer.getFruit(name);
 
         //then
         assertThat(fruitFlux.blockFirst()).isNotEqualTo(null);

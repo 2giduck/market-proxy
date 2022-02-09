@@ -1,5 +1,6 @@
 package topia.duck.market.server;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -19,27 +20,30 @@ public class FruitServerImpl implements FruitServer{
     private final String AUTHORIZATION_HEADER_KEY = "Authorization";
     private final String NAME_QUERY_KEY="name";
 
-    @Override
-    public Flux<Token> getAccessToken() {
-        return WebClient.create(HTTP_URL+FRUIT_HOST)
+    private static String accessToken;
+
+    public void getAccessToken() {
+        String token = WebClient.create(HTTP_URL+FRUIT_HOST)
                 .get()
                 .uri(GET_TOKEN_END_POINT)
                 .retrieve()
-                .bodyToFlux(Token.class);
+                .bodyToFlux(Token.class).blockFirst().getAccessToken();
+
+        accessToken = token;
     }
 
     @Override
-    public Flux<String> getFruitList(String token) {
+    public Flux<String> getFruitList() {
         return WebClient.create(HTTP_URL+FRUIT_HOST)
                 .get()
                 .uri(GET_FRUIT_END_POINT)
-                .header(AUTHORIZATION_HEADER_KEY, token)
+                .header(AUTHORIZATION_HEADER_KEY, accessToken)
                 .retrieve()
                 .bodyToFlux(String.class);
     }
 
     @Override
-    public Flux<Product> getFruit(String token, String name) {
+    public Flux<Product> getFruit(String name) {
         return WebClient.create(HTTP_URL+FRUIT_HOST)
                 .get()
                 .uri(uriBuilder -> uriBuilder
@@ -47,7 +51,7 @@ public class FruitServerImpl implements FruitServer{
                         .queryParam(NAME_QUERY_KEY, name)
                         .build()
                 )
-                .header(AUTHORIZATION_HEADER_KEY, token)
+                .header(AUTHORIZATION_HEADER_KEY, accessToken)
                 .retrieve()
                 .bodyToFlux(Product.class);
     }
