@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8"/>
+<head></head>
+<body>
+<div>
+    <div id="productValue">
+        <select class="select_type01 w170" id="typeOption">
+            <option value="fruit">과일</option>
+            <option value="vegetable">채소</option>
+        </select>
+        <input type="text" id="name" placeholder="이름">
+        <button type="submit" onclick="start()">조회</button>
+    </div>
+    <div id="priceValue">
+        <script type="text/javascript">
+            var source = null;
+            var selectList = document.getElementById("typeOption").options;
+            function start() {
+                stop();
+                var name = document.getElementById("name").value;
+                var optionIndex = selectList.selectedIndex;
+                if(selectList[optionIndex].value == 'fruit'){   // 선택한 값이 과일이라면
+                    if(name==""){
+                        source = new EventSource("/product/fruit");
+                    }else{
+                        source = new EventSource("/product/fruit?name="+name);
+                    }
+                }else{  // 선택한 값이 채소라면
+                    if(name==""){
+                        source = new EventSource("/product/item");
+                    }else{
+                        source = new EventSource("/product/item?name="+name);
+                    }
+                }
+                source.onmessage = function(ev) {
+                    console.log("on message: ", ev.data);
+                    $("#priceValue").text(ev.data)
+                };
+                source.onerror = function(err) {
+                    console.log("on err: ", err);
+                    $("#priceValue").text('해당하는 값이 없습니다')
+                    stop();
+                };
+            }
+            function stop() {
+                if (source != null) {
+                    source.close();
+                    source = null;
+                }
+            }
+
+            $(window).on("unload", function () {
+                stop();
+            });
+        </script>
+    </div>
+</div>
+</body>

@@ -1,6 +1,5 @@
 package topia.duck.market.domain;
 
-import lombok.Builder;
 import lombok.Data;
 
 @Data
