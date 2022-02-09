@@ -4,6 +4,8 @@
 <body>
 <div>
     <div id="productValue">
+        <div id="fruitList"></div>
+        <div id="vegetableList"></div>
         <select class="select_type01 w170" id="typeOption">
             <option value="fruit">과일</option>
             <option value="vegetable">채소</option>
@@ -11,26 +13,17 @@
         <input type="text" id="name" placeholder="이름">
         <button type="submit" onclick="start()">조회</button>
     </div>
-    <div id="priceValue">
+    <div id="priceValue"></div>
         <script type="text/javascript">
             var source = null;
             var selectList = document.getElementById("typeOption").options;
             function start() {
-                stop();
                 var name = document.getElementById("name").value;
                 var optionIndex = selectList.selectedIndex;
                 if(selectList[optionIndex].value == 'fruit'){   // 선택한 값이 과일이라면
-                    if(name==""){
-                        source = new EventSource("/product/fruit");
-                    }else{
-                        source = new EventSource("/product/fruit?name="+name);
-                    }
+                    source = new EventSource("/product/fruit?name="+name);
                 }else{  // 선택한 값이 채소라면
-                    if(name==""){
-                        source = new EventSource("/product/item");
-                    }else{
-                        source = new EventSource("/product/item?name="+name);
-                    }
+                    source = new EventSource("/product/item?name="+name);
                 }
                 source.onmessage = function(ev) {
                     console.log("on message: ", ev.data);
@@ -49,10 +42,17 @@
                 }
             }
 
-            $(window).on("unload", function () {
+            window.onload=function(){
+                source = new EventSource("/product/fruit");
+                source.onmessage = function(ev) {
+                    console.log(ev.data)
+                    $("#fruitList").value(ev.data)
+                };
+            }
+
+            window.onunload=function(){
                 stop();
-            });
+            }
         </script>
     </div>
-</div>
 </body>

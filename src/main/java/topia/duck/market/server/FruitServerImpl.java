@@ -3,6 +3,7 @@ package topia.duck.market.server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -29,32 +30,30 @@ public class FruitServerImpl implements FruitServer{
     private static String accessToken;
 
     public void getAccessToken() {
-        String token = WebClient.create(HTTP_URL+FRUIT_HOST)
+        Token token = WebClient.create(HTTP_URL+FRUIT_HOST)
                 .get()
                 .uri(GET_TOKEN_END_POINT)
                 .retrieve()
-                .bodyToFlux(Token.class).blockFirst().getAccessToken();
+                .bodyToFlux(Token.class)
+                .toStream().findAny().get();
 
+        accessToken = token.getAccessToken();
         logger.info("accessToken = "+accessToken);
-        accessToken = token;
     }
 
     @Override
-    public String[] getFruitList() {
-        String fruits = WebClient.create(HTTP_URL + FRUIT_HOST)
+    public Flux<String> getFruitList() {
+        return WebClient.create(HTTP_URL + FRUIT_HOST)
                 .get()
                 .uri(GET_FRUIT_END_POINT)
                 .header(AUTHORIZATION_HEADER_KEY, accessToken)
                 .retrieve()
-                .bodyToFlux(String.class)
-                .blockFirst();
-
-        return fruits.substring(1, fruits.length()-1).replaceAll("\"","").split(",");
+                .bodyToFlux(String.class);
     }
 
 
     @Override
-    public Product getFruit(String name) {
+    public Flux<Product> getFruit(String name) {
         return WebClient.create(HTTP_URL+FRUIT_HOST)
                 .get()
                 .uri(uriBuilder -> uriBuilder
@@ -63,11 +62,11 @@ public class FruitServerImpl implements FruitServer{
                         .build()
                 )
                 .header(AUTHORIZATION_HEADER_KEY, accessToken)
-                .exchangeToMono(resp->{
+                .exchangeToFlux(resp->{
                   if(resp.statusCode().is4xxClientError())
                       throw new IllegalStateException("지정된 이름에 해당하는 정보가 없습니다.");
                   else
-                      return resp.bodyToMono(Product.class);
-                }).block();
+                      return resp.bodyToFlux(Product.class);
+                });
     }
 }

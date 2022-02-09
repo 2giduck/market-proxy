@@ -11,7 +11,7 @@ public interface FruitServer {
 
     void getAccessToken();
 
-    String[] getFruitList();   // 과일 이름 리스트 가져오기
+    Flux<String> getFruitList();   // 과일 이름 리스트 가져오기
 
-    Product getFruit(String name); // 과일 이름으로 가격 찾기
+    Flux<Product> getFruit(String name); // 과일 이름으로 가격 찾기
 }
