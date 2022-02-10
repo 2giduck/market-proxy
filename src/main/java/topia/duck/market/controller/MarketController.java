@@ -1,5 +1,6 @@
 package topia.duck.market.controller;
 
+import lombok.AllArgsConstructor;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,17 +11,13 @@ import topia.duck.market.server.FruitServer;
 import topia.duck.market.server.VegetableServer;
 
 
+@AllArgsConstructor
 @RestController
 @RequestMapping("/product")
 public class MarketController {
 
     private final FruitServer fruitServer;
     private final VegetableServer vegetableServer;
-
-    public MarketController(FruitServer fruitServer, VegetableServer vegetableServer) {
-        this.fruitServer = fruitServer;
-        this.vegetableServer = vegetableServer;
-    }
 
     @GetMapping("/fruit")
     public Flux<?> getFruitItems(@RequestParam(value = "name", required = false)String name){
