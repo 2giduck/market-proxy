@@ -7,15 +7,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import reactor.core.publisher.Flux;
 import topia.duck.market.domain.Product;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 class FruitServerImplTest {
     @Autowired
-    private FruitServerImpl fruitServer;
+    private FruitServer fruitServer;
 
     @Test
     @DisplayName("과일 토큰 가져오기 테스트")
