@@ -31,18 +31,24 @@ public class VegetableServerImpl implements VegetableServer {
 
     @Override
     public void getAccessToken() {
-        ClientResponse resp = WebClient.create(HTTP_URL+VEGETABLE_HOST)
-                .get()
-                .uri(GET_TOKEN_END_POINT)
-                .exchange().block();
+        if(accessToken==null){
+            ClientResponse resp = WebClient.create(HTTP_URL+VEGETABLE_HOST)
+                    .get()
+                    .uri(GET_TOKEN_END_POINT)
+                    .exchange().block();
 
-        String token = resp.headers().asHttpHeaders()
-                .getFirst(SET_COOKIE_HEADER_KEY)
-                .replaceFirst("Authorization=","")
-                .replace("; Path=/","");
+            try{
+                String token = resp.headers().asHttpHeaders()
+                        .getFirst(SET_COOKIE_HEADER_KEY)
+                        .replaceFirst("Authorization=","")
+                        .replace("; Path=/","");
 
-        accessToken = token;
-        logger.info("vegetable_access_token = "+accessToken);
+                accessToken = token;
+                logger.info("vegetable_access_token = "+accessToken);
+            }catch(Exception e){
+                logger.error("API 서버 에러 | "+resp.statusCode());
+            }
+        }
     }
 
     @Override

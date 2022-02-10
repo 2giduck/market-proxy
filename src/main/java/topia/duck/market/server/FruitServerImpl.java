@@ -26,15 +26,21 @@ public class FruitServerImpl implements FruitServer{
     private static String accessToken;
 
     public void getAccessToken() {
-        Token token = WebClient.create(HTTP_URL+FRUIT_HOST)
-                .get()
-                .uri(GET_TOKEN_END_POINT)
-                .retrieve()
-                .bodyToFlux(Token.class)
-                .toStream().findAny().get();
+        if(accessToken==null){
+            try{
+                Token token = WebClient.create(HTTP_URL+FRUIT_HOST)
+                        .get()
+                        .uri(GET_TOKEN_END_POINT)
+                        .retrieve()
+                        .bodyToFlux(Token.class)
+                        .toStream().findAny().get();
 
-        accessToken = token.getAccessToken();
-        logger.info("fruit_access_token = "+accessToken);
+                accessToken = token.getAccessToken();
+                logger.info("fruit_access_token = "+accessToken);
+            }catch(Exception e){
+                logger.info("API 서버 에러 | "+e.getMessage());
+            }
+        }
     }
 
     @Override

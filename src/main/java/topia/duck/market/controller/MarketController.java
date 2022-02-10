@@ -35,7 +35,7 @@ public class MarketController {
     @GetMapping("/vegetable")
     public Flux<?> getVegetableItems(@RequestParam(value = "name", required = false)String name){
         vegetableServer.getAccessToken();
-        if(name==null){ // 이름 없이 요청했으면, 과일 이름 목록 전달
+        if(name==null){ // 이름 없이 요청했으면, 채소 이름 목록 전달
             return vegetableServer.getVegetableList();
         }else{
             return vegetableServer.getVegetable(name);
